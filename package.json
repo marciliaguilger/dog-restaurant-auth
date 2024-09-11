@@ -1,0 +1,27 @@
+{
+  "name": "dog-restaurant-auth",
+  "version": "1.0.0",
+  "description": "Lambda de autenticação de usuário na api dog-restaurant",
+  "main": "src/app.ts",
+  "scripts": {
+       "build": "tsc",
+       "deploy": "serverless deploy",
+       "start": "ts-node src/app.ts"
+     },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^22.5.4",
+    "aws-sdk": "^2.1691.0",
+    "express": "^4.20.0",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  }
+}
