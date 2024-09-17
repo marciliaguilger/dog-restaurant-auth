@@ -26,17 +26,13 @@ provider "aws" {
      }
 
      resource "aws_lambda_function" "example" {
-       function_name = "example_lambda"
+       function_name = "dog_restaurant_auth"
        role          = aws_iam_role.lambda_role.arn
-       handler       = "index.handler"
+       handler       = "app.handler"
        runtime       = "nodejs14.x"
 
-       filename      = "lambda_function_payload.zip"
-       source_code_hash = filebase64sha256("lambda_function_payload.zip")
+       filename      = "dog_restaurant_auth.zip"
+       source_code_hash = filebase64sha256("dog-restaurant-auth.zip")
 
-       environment {
-         variables = {
-           foo = "bar"
-         }
        }
      }
