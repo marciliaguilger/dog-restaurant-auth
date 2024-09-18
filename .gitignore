@@ -128,3 +128,40 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# Diretório de estado do Terraform
+.terraform/
+
+# Arquivos de estado do Terraform
+terraform.tfstate
+terraform.tfstate.backup
+
+# Logs de travamento do Terraform
+crash.log
+
+# Planos de execução do Terraform
+*.tfplan
+
+# Override files do Terraform
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Arquivos de configuração de variáveis sensíveis
+*.tfvars
+*.tfvars.json
+
+# Arquivos de saída do Terraform
+*.tfout
+
+# Arquivos de lock do Terraform
+.terraform.lock.hcl
+
+# Arquivos de lock do provedor do Terraform
+.terraformrc
+terraform.rc
+
+# Arquivos de credenciais
+credentials.tfrc.json
