@@ -1,6 +1,6 @@
 provider "aws" {
   region = "us-east-1"  # Substitua pela sua região preferida
-  profile = "pos"
+  # profile = "pos"
 }
 
 resource "aws_iam_role" "lambda_role" {
