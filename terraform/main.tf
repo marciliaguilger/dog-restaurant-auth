@@ -1,4 +1,5 @@
-provider "aws" {
+{
+  provider "aws" {
        region = "us-east-1"
      }
 
@@ -35,4 +36,4 @@ provider "aws" {
        source_code_hash = filebase64sha256("dog-restaurant-auth.zip")
 
        }
-     }
+}
