@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Zip Lambda function
-        run: zip -r dog-restaurant-auth.zip .
+        run: zip -r lambda_function.zip .
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
