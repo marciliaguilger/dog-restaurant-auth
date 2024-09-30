@@ -22,8 +22,8 @@ jobs:
         run: npm install
 
       - name: Zip Lambda function
-        run: zip -r lambda_function.zip .
-
+        run: |
+          zip -r lambda_function.zip index.js node_modules package.json package-lock.json -x '*.git*'
       #- name: Setup Terraform
       #  uses: hashicorp/setup-terraform@v1
       #  with:
