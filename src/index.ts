@@ -1,6 +1,68 @@
-import { Handler } from 'aws-lambda';
+import { APIGatewayTokenAuthorizerEvent, APIGatewayAuthorizerResult, Context } from 'aws-lambda';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwksClient from 'jwks-rsa';
+import { promisify } from 'util';
+import { SSM } from 'aws-sdk';
 
-export const handler: Handler = async (event, context) => {
-    console.log('EVENT: \n' + JSON.stringify(event, null, 2));
-    return context.logStreamName;
+const ssm = new SSM();
+
+interface CustomJwtPayload extends JwtPayload {
+  'cognito:groups'?: string[];
+}
+
+const jwksUri = process.env.AWS_COGNITO_URL;
+if (!jwksUri) {
+  throw new Error('JWKS_URI environment variable is not defined');
+}
+
+const client = jwksClient({
+  jwksUri: jwksUri
+});
+
+const getSigningKey = promisify(client.getSigningKey);
+
+export const handler = async (event: APIGatewayTokenAuthorizerEvent, context: Context): Promise<APIGatewayAuthorizerResult> => {
+  const token = event.authorizationToken;
+
+  try {
+    const decodedHeader: any = jwt.decode(token, { complete: true });
+    const kid = decodedHeader.header.kid;
+    const key = await getSigningKey(kid);
+    if(key == undefined) throw new Error("Key not defined")
+    const signingKey = key.getPublicKey();
+
+    const decoded = jwt.verify(token, signingKey) as CustomJwtPayload;
+
+    // Check if the user belongs to the AdminUsers group
+    if (decoded['cognito:groups'] && decoded['cognito:groups'].includes('AdminUsers')) {
+      return generatePolicy('user', 'Allow', event.methodArn);
+    } else {
+      return generatePolicy('user', 'Deny', event.methodArn);
+    }
+  } catch (err) {
+    console.error('Token verification failed:', err);
+    return generatePolicy('user', 'Deny', event.methodArn);
+  }
+};
+
+// Define the type for StatementEffect
+type StatementEffect = 'Allow' | 'Deny';
+
+// Function to generate the authorization policy
+const generatePolicy = (principalId: string, effect: StatementEffect, resource: string): APIGatewayAuthorizerResult => {
+  const authResponse: APIGatewayAuthorizerResult = {
+    principalId,
+    policyDocument: {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Action: 'execute-api:Invoke',
+          Effect: effect,
+          Resource: resource
+        }
+      ]
+    }
+  };
+
+  return authResponse;
 };
