@@ -4,9 +4,7 @@
   "description": "Lambda de autenticação de usuário na api dog-restaurant",
   "main": "index.ts",
   "scripts": {
-    "build": "tsc",
-    "deploy": "serverless deploy",
-    "start": "ts-node index.ts"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
