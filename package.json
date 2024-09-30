@@ -4,7 +4,7 @@
   "description": "Lambda de autenticação de usuário na api dog-restaurant",
   "main": "index.ts",
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsc",
     "deploy": "serverless deploy",
     "start": "ts-node index.ts"
   },
@@ -16,6 +16,7 @@
     "@types/node": "^22.5.4",
     "aws-sdk": "^2.1691.0",
     "express": "^4.20.0",
+    "jsonwebtoken": "^9.0.2",
     "serverless-http": "^3.2.0"
   },
   "devDependencies": {
