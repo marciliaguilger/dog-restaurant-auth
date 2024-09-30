@@ -2,11 +2,11 @@
   "name": "dog-restaurant-auth",
   "version": "1.0.0",
   "description": "Lambda de autenticação de usuário na api dog-restaurant",
-  "main": "src/app.ts",
+  "main": "index.ts",
   "scripts": {
     "build": "npx tsc",
     "deploy": "serverless deploy",
-    "start": "ts-node src/app.ts"
+    "start": "ts-node index.ts"
   },
   "keywords": [],
   "author": "",
