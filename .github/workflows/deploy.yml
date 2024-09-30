@@ -21,9 +21,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Zip Lambda function
+      - name: Compile TypeScript
+        run: npm run build
+
+      - name: Prepare deployment package
         run: |
-          zip -r lambda_function.zip index.js node_modules package.json package-lock.json -x '*.git*'
+          mkdir -p lambda_package
+          cp dist/* lambda_package/
+          cp -r node_modules lambda_package/
+          cp package.json lambda_package/
+          cp package-lock.json lambda_package/
+          cd lambda_package
+          zip -r ../lambda_function.zip . -x '*.git*'
       #- name: Setup Terraform
       #  uses: hashicorp/setup-terraform@v1
       #  with:
