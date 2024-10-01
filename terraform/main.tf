@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"  # Substitua pela sua região preferida
+  region = "us-east-1"  
   # profile = "pos"
 }
 
@@ -26,18 +26,13 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 }
 
 resource "aws_lambda_function" "my_lambda" {
-  function_name = "myLambdaFunction"
+  function_name = "lambda_authorizer"
   role          = aws_iam_role.lambda_role.arn
   handler       = "index.handler"
   runtime       = "nodejs16.x"
 
-  filename      = "../lambda_function.zip"  # O arquivo zip da sua função Lambda
+  filename      = "../lambda_authorizer.zip"  
 
-  source_code_hash = filebase64sha256("../lambda_function.zip")
+  source_code_hash = filebase64sha256("../lambda_authorizer.zip")
 
-  environment {
-    variables = {
-      foo = "bar"
-    }
-  }
 }

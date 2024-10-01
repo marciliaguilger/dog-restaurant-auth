@@ -1,4 +1,4 @@
-import { APIGatewayTokenAuthorizerEvent, APIGatewayAuthorizerResult, Context, APIGatewayRequestAuthorizerEventV2 } from 'aws-lambda';
+import { APIGatewayAuthorizerResult, Context, APIGatewayRequestAuthorizerEventV2 } from 'aws-lambda';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { promisify } from 'util';
