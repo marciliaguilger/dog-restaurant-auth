@@ -1,4 +1,4 @@
-import { APIGatewayTokenAuthorizerEvent, APIGatewayAuthorizerResult, Context } from 'aws-lambda';
+import { APIGatewayTokenAuthorizerEvent, APIGatewayAuthorizerResult, Context, APIGatewayRequestAuthorizerEventV2 } from 'aws-lambda';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { promisify } from 'util';
@@ -21,13 +21,13 @@ const client = jwksClient({
 
 const getSigningKey = promisify(client.getSigningKey);
 
-export const handler = async (event: APIGatewayTokenAuthorizerEvent, context: Context): Promise<APIGatewayAuthorizerResult> => {
+export const handler = async (event: APIGatewayRequestAuthorizerEventV2, context: Context): Promise<APIGatewayAuthorizerResult> => {
   console.log('Received event:', JSON.stringify(event, null, 2));
-  if (!event.authorizationToken) {
+  if (!event.headers || !event.headers.authorization) {
     console.error('authorizationToken is missing from the event');
     throw new Error('Unauthorized');
   }
-  const token = event.authorizationToken;
+  const token = event.headers.authorization.split(' ')[1];
 
   try {
     const decodedHeader: any = jwt.decode(token, { complete: true });
@@ -40,13 +40,13 @@ export const handler = async (event: APIGatewayTokenAuthorizerEvent, context: Co
     console.log(decoded);
     // Check if the user belongs to the AdminUsers group
     if (decoded['cognito:groups'] && decoded['cognito:groups'].includes('AdminUsers')) {
-      return generatePolicy('user', 'Allow', event.methodArn);
+      return generatePolicy('user', 'Allow', event.routeArn);
     } else {
-      return generatePolicy('user', 'Deny', event.methodArn);
+      return generatePolicy('user', 'Deny', event.routeArn);
     }
   } catch (err) {
     console.error('Token verification failed:', err);
-    return generatePolicy('user', 'Deny', event.methodArn);
+    return generatePolicy('user', 'Deny', event.routeArn);
   }
 };
 
