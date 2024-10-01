@@ -22,6 +22,11 @@ const client = jwksClient({
 const getSigningKey = promisify(client.getSigningKey);
 
 export const handler = async (event: APIGatewayTokenAuthorizerEvent, context: Context): Promise<APIGatewayAuthorizerResult> => {
+  console.log('Received event:', JSON.stringify(event, null, 2));
+  if (!event.authorizationToken) {
+    console.error('authorizationToken is missing from the event');
+    throw new Error('Unauthorized');
+  }
   const token = event.authorizationToken;
 
   try {
@@ -32,7 +37,7 @@ export const handler = async (event: APIGatewayTokenAuthorizerEvent, context: Co
     const signingKey = key.getPublicKey();
 
     const decoded = jwt.verify(token, signingKey) as CustomJwtPayload;
-
+    console.log(decoded);
     // Check if the user belongs to the AdminUsers group
     if (decoded['cognito:groups'] && decoded['cognito:groups'].includes('AdminUsers')) {
       return generatePolicy('user', 'Allow', event.methodArn);
